@@ -49,18 +49,6 @@ services:
       - identity.api
       - rabbitmq
 
-  webspa:
-    image: eshop/webspa:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: src/Web/WebSPA/Dockerfile    
-    depends_on:
-      - catalog.api
-      - ordering.api
-      - identity.api
-      - basket.api
-      - marketing.api
-
   webmvc:
     image: eshop/webmvc:${TAG:-latest}
     build:
