@@ -5,6 +5,7 @@ Param(
 
 Write-Host "Deploying infrastructure..." -ForegroundColor Yellow
 kubectl apply -f .\rabbitmq.yaml
+kubectl apply -f .\basket-data.yaml
 kubectl apply -f .\keystore-data.yaml
 kubectl apply -f .\nosql-data.yaml
 kubectl apply -f .\sql-data.yaml
@@ -94,3 +95,7 @@ kubectl rollout resume deployments/payment
 kubectl rollout resume deployments/webmvc
 kubectl rollout resume deployments/webstatus
 kubectl rollout resume deployments/ordering
+
+
+Write-Host "WebMVC at http://$externalDns/webmvc, WebStatus at http://$externalDns/webstatus" -ForegroundColor Yellow
+
