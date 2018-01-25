@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: marketing
+  name: marketing
+spec:
+  ports:
+  - port: 80
+  type: ClusterIP  
+  selector:
+    app: eshop
+    component: marketing
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: marketing
+spec:
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: marketing
+    spec:
+      containers:
+      - name: marketing
+        image: eshop/marketing.api
+        imagePullPolicy: Always
+        env:
+        - name: PATH_BASE
+          value: /marketing-api
+        - name: ConnectionString
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: MarketingSqlDb
+        - name: MongoConnectionString
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: MarketingNoSqlDb
+        - name: MongoDatabase
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: MarketingNoSqlDbName 
+        - name: AzureServiceBusEnabled
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: UseAzureServiceBus
+        - name: EventBusConnection
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: MarketingBus
+        - name: IdentityUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: IdentityUrl
+        - name: IdentityUrlExternal
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: IdentityUrl             
+        - name: PicBaseUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: Marketing_PicBaseUrl 
+        - name: ApplicationInsights__InstrumentationKey
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: Instrumentation_Key
+        - name: UseLoadTest
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: EnableLoadTest
+        - name: OrchestratorType
+          value: 'K8S'            
+        ports:
+        - containerPort: 80
+        # readinessProbe:
+        #   httpGet:
+        #     path: /hc
+        #     port: 80
+        #     scheme: HTTP 
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10 
+        # livenessProbe:
+        #   httpGet:
+        #     path: /hc
+        #     port: 80
+        #     scheme: HTTP 
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10      
+      imagePullSecrets:
+      - name: registry-key
+---

@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eshop
+    component: webstatus
+  name: webstatus
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: eshop
+    component: webstatus
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webstatus
+spec:
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webstatus
+    spec:
+      containers:
+      - name: webstatus
+        image: eshop/webstatus
+        imagePullPolicy: Always
+        env:
+        - name: PATH_BASE
+          value: /webstatus
+        - name: BasketUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: BasketHealthCheckUrl
+        - name: CatalogUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: CatalogHealthCheckUrl
+        - name: IdentityUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: IdentityHealthCheckUrl
+        - name: OrderingUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: OrderingHealthCheckUrl
+        - name: LocationsUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: LocationsHealthCheckUrl
+        - name: MarketingUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: MarketingHealthCheckUrl
+        - name: mvc
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: WebMvcHealthCheckUrl
+        - name: ApplicationInsights__InstrumentationKey
+          valueFrom:
+           configMapKeyRef:
+             name: externalcfg
+             key: Instrumentation_Key               
+        - name: PaymentUrl
+          valueFrom:
+           configMapKeyRef:
+             name: urls
+             key: PaymentHealthCheckUrl 
+        - name: OrchestratorType
+          value: 'K8S'       
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: registry-key
