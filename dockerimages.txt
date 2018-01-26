@@ -1,5 +1,4 @@
 ﻿eshop/webmvc
-eshop/webstatus
 eshop/ordering.api
 eshop/catalog.api
 eshop/marketing.api
@@ -7,3 +6,4 @@ eshop/identity.api
 eshop/payment.api
 eshop/basket.api
 eshop/locations.api
+eshop/webstatus
