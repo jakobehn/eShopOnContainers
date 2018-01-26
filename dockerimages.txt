@@ -1,7 +1,7 @@
 eshop/webmvc
 eshop/webstatus
 eshop/ordering.api
-eshop/cataalog.api
+eshop/catalog.api
 eshop/marketing.api
 eshop/identity.api
 eshop/payment.api
